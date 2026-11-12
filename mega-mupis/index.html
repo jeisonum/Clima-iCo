@@ -6,14 +6,15 @@
     <title>Hora, Fecha y Clima</title>
 
     <style>
+      html,
       body {
         margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 2160px;
-        height: 3840px;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
         background: #000;
+      }
+      body {
         font-family: Arial, sans-serif;
         font-weight: bold;
       }
@@ -55,10 +56,13 @@
       }
 
       .container {
-        position: relative;
+        position: absolute;
+        top: 0;
+        left: 0;
         display: grid;
         width: 2160px;
         height: 3840px;
+        transform-origin: 0 0;
       }
 
       .grid-item {
@@ -420,6 +424,21 @@
           requestAnimationFrame(fitAllGridText);
         }
       }
+      // ESCALADO: el diseño se hace a 2160x3840 y se reduce/amplía completo
+      // al tamaño real de la pantalla, centrado y sin deformarse.
+      const DESIGN_W = 2160;
+      const DESIGN_H = 3840;
+      function scaleToScreen() {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const scale = Math.min(w / DESIGN_W, h / DESIGN_H);
+        const x = (w - DESIGN_W * scale) / 2;
+        const y = (h - DESIGN_H * scale) / 2;
+        document.querySelector(".container").style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      }
+      scaleToScreen();
+      window.addEventListener("resize", scaleToScreen);
+
       updateClock();
       updateWeatherIcon();
       updateWeatherBackground();
